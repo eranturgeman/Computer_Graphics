@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 49d85c8c57aa94ecaae88bfb5b4b59e1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - BVHFile: {fileID: 4900000, guid: b4dd42f954ded4d68ad659081130e6d7, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
