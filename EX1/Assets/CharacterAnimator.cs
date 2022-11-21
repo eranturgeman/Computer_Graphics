@@ -23,7 +23,6 @@ public class CharacterAnimator : MonoBehaviour
         BVHParser parser = new BVHParser();
         data = parser.Parse(BVHFile);
         CreateJoint(data.rootJoint, Vector3.zero);
-        RotateTowardsVector(new Vector3(19, 38, 4));
     }
 
     // Returns a Matrix4x4 representing a rotation aligning the up direction of an object with the given v
@@ -35,9 +34,6 @@ public class CharacterAnimator : MonoBehaviour
 
         double thetaZ = 90 - (Mathf.Rad2Deg * Mathf.Atan2(Mathf.Sqrt((v[1] * v[1]) + (v[2] * v[2])), v[0]));
         Matrix4x4 Rz = MatrixUtils.RotateZ((float)thetaZ);
-
-        //print((Rx.inverse * Rz.inverse).MultiplyVector(new Vector3(0, 1, 0))); todo self check
-
         return (Rz * Rx).inverse;
     }
 
@@ -60,27 +56,19 @@ public class CharacterAnimator : MonoBehaviour
     // Creates a GameObject representing a given BVHJoint and recursively creates GameObjects for it's child joints
     public GameObject CreateJoint(BVHJoint joint, Vector3 parentPosition)
     {
-        
-
         joint.gameObject = new GameObject(joint.name);
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.transform.parent = joint.gameObject.transform;
         Vector3 scaleVec;
-        if (joint.name == "Head")
-        {
-            scaleVec = new Vector3(8, 8, 8);
-        }
-        else
-        {
-            scaleVec = new Vector3(2, 2, 2);
-        }
-
+        scaleVec = joint.name == "Head" ? new Vector3(8, 8, 8) : new Vector3(2, 2, 2);
+   
         Matrix4x4 scaleMatrix = MatrixUtils.Scale(scaleVec);
         MatrixUtils.ApplyTransform(sphere, scaleMatrix);
 
         Vector3 newPosition = parentPosition + joint.offset;
         Matrix4x4 translationMatrix = MatrixUtils.Translate(newPosition);
         MatrixUtils.ApplyTransform(joint.gameObject, translationMatrix);
+
         foreach (BVHJoint child in joint.children)
         {
             CreateJoint(child, newPosition);
@@ -88,11 +76,11 @@ public class CharacterAnimator : MonoBehaviour
             cylinder.transform.parent = joint.gameObject.transform;
             
         }
-
-
         return joint.gameObject;
-
     }
+
+
+    
 
     // Transforms BVHJoint according to the keyframe channel data, and recursively transforms its children
     public void TransformJoint(BVHJoint joint, Matrix4x4 parentTransform)
@@ -103,79 +91,13 @@ public class CharacterAnimator : MonoBehaviour
             return;
         }
 
-        Matrix4x4[] rotationMats = new Matrix4x4[3];
-        Matrix4x4[] orderdRotationMats = new Matrix4x4[3];
-        Matrix4x4 rotationMat = Matrix4x4.identity;
         Matrix4x4 finalMat = parentTransform;
 
-        //todo check if needed
-        Vector3 curAngles = new Vector3();
-        Vector3 nextAngles = new Vector3();
-        //
-
-        if (interpolate)
-        {
-            //cur frame quaternions
-            curAngles[0] = currFrameData[joint.rotationChannels.x];
-            curAngles[1] = currFrameData[joint.rotationChannels.y];
-            curAngles[2] = currFrameData[joint.rotationChannels.z];
-
-            Vector4 curQ = QuaternionUtils.FromEuler(curAngles, joint.rotationOrder).normalized;
-
-
-            //next frame quaternions
-            nextAngles[0] = nextFrameData[joint.rotationChannels.x];
-            nextAngles[1] = nextFrameData[joint.rotationChannels.y];
-            nextAngles[2] = nextFrameData[joint.rotationChannels.z];
-
-            Vector4 nextQ = QuaternionUtils.FromEuler(nextAngles, joint.rotationOrder).normalized;
-
-            //slerp
-            Vector4 slerped = QuaternionUtils.Slerp(curQ, nextQ, t).normalized;
-            rotationMat = MatrixUtils.RotateFromQuaternion(slerped);
-        }
-        else
-        {
-            rotationMats[0] = MatrixUtils.RotateX(currFrameData[joint.rotationChannels.x]);
-            rotationMats[1] = MatrixUtils.RotateY(currFrameData[joint.rotationChannels.y]);
-            rotationMats[2] = MatrixUtils.RotateZ(currFrameData[joint.rotationChannels.z]);
-            for (int i = 0; i < 3; i++)
-            {
-                orderdRotationMats[joint.rotationOrder[i]] = rotationMats[i];
-            }
-            foreach (Matrix4x4 mat in orderdRotationMats)
-            {
-               rotationMat = rotationMat * mat;
-            }
-        }
-
-
         //translation
-        if (joint == data.rootJoint)
-        {
-            Vector3 translationParms = new Vector3();
-            translationParms[0] = currFrameData[joint.positionChannels.x];
-            translationParms[1] = currFrameData[joint.positionChannels.y];
-            translationParms[2] = currFrameData[joint.positionChannels.z];
-            if (interpolate)
-            {
-                Vector3 translationParmsNext = new Vector3();
-                translationParmsNext[0] = nextFrameData[joint.positionChannels.x];
-                translationParmsNext[1] = nextFrameData[joint.positionChannels.y];
-                translationParmsNext[2] = nextFrameData[joint.positionChannels.z];
-                translationParms = Vector3.Lerp(translationParms, translationParmsNext, t);
-            }
-
-            finalMat = finalMat * MatrixUtils.Translate(translationParms);
-        }
-        else
-        {
-            finalMat = finalMat * MatrixUtils.Translate(joint.offset);
-        }
-
+        finalMat = finalMat * GetTranslationMatrix(joint);
 
         // rotation
-        finalMat = finalMat * rotationMat;
+        finalMat = finalMat * GetRotationMatrix(joint);
 
         MatrixUtils.ApplyTransform(joint.gameObject, finalMat);
         foreach (BVHJoint child in joint.children)
@@ -188,7 +110,6 @@ public class CharacterAnimator : MonoBehaviour
     public int GetFrameNumber(float time)
     {
         return (int)(time / data.frameLength) % data.numFrames;
-
     }
 
     // Returns the proportion of time elapsed between the last frame and the next one, between 0 and 1
@@ -210,9 +131,77 @@ public class CharacterAnimator : MonoBehaviour
             {
                 nextFrameData = data.keyframes[currFrame + 1];
             }
-            TransformJoint(data.rootJoint, Matrix4x4.identity); //todo change parent matrix here
+            TransformJoint(data.rootJoint, Matrix4x4.identity);
         }
+    }
 
+    //produces rotation matrix
+    private Matrix4x4 GetRotationMatrix(BVHJoint joint)
+    {
+        Matrix4x4[] rotationMats = new Matrix4x4[3];
+        Matrix4x4[] orderdRotationMats = new Matrix4x4[3];
+        Matrix4x4 rotationMat = Matrix4x4.identity;
+        Vector3 curAngles = new Vector3();
+        Vector3 nextAngles = new Vector3();
 
+        if (interpolate)
+        {
+            //cur frame quaternions
+            curAngles[0] = currFrameData[joint.rotationChannels.x];
+            curAngles[1] = currFrameData[joint.rotationChannels.y];
+            curAngles[2] = currFrameData[joint.rotationChannels.z];
+            Vector4 curQ = QuaternionUtils.FromEuler(curAngles, joint.rotationOrder).normalized;
+
+            //next frame quaternions
+            nextAngles[0] = nextFrameData[joint.rotationChannels.x];
+            nextAngles[1] = nextFrameData[joint.rotationChannels.y];
+            nextAngles[2] = nextFrameData[joint.rotationChannels.z];
+            Vector4 nextQ = QuaternionUtils.FromEuler(nextAngles, joint.rotationOrder).normalized;
+
+            //slerp
+            Vector4 slerped = QuaternionUtils.Slerp(curQ, nextQ, t).normalized;
+            rotationMat = MatrixUtils.RotateFromQuaternion(slerped);
+        }
+        else
+        {
+            rotationMats[0] = MatrixUtils.RotateX(currFrameData[joint.rotationChannels.x]);
+            rotationMats[1] = MatrixUtils.RotateY(currFrameData[joint.rotationChannels.y]);
+            rotationMats[2] = MatrixUtils.RotateZ(currFrameData[joint.rotationChannels.z]);
+            for (int i = 0; i < 3; i++)
+            {
+                orderdRotationMats[joint.rotationOrder[i]] = rotationMats[i];
+            }
+            foreach (Matrix4x4 mat in orderdRotationMats)
+            {
+                rotationMat = rotationMat * mat;
+            }
+        }
+        return rotationMat;
+    }
+
+    //produces translation matrix
+    private Matrix4x4 GetTranslationMatrix(BVHJoint joint)
+    {
+        if (joint == data.rootJoint)
+        {
+            Vector3 translationParms = new Vector3();
+            translationParms[0] = currFrameData[joint.positionChannels.x];
+            translationParms[1] = currFrameData[joint.positionChannels.y];
+            translationParms[2] = currFrameData[joint.positionChannels.z];
+            if (interpolate)
+            {
+                Vector3 translationParmsNext = new Vector3();
+                translationParmsNext[0] = nextFrameData[joint.positionChannels.x];
+                translationParmsNext[1] = nextFrameData[joint.positionChannels.y];
+                translationParmsNext[2] = nextFrameData[joint.positionChannels.z];
+                translationParms = Vector3.Lerp(translationParms, translationParmsNext, t);
+            }
+
+            return MatrixUtils.Translate(translationParms);
+        }
+        else
+        {
+            return MatrixUtils.Translate(joint.offset);
+        }
     }
 }

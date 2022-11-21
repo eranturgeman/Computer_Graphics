@@ -53,12 +53,7 @@ public class QuaternionUtils
             orderedVectors[rotationOrder[i]] = rotationVectors[i];
         }
 
-        //todo check what is the correct return: first one is not as shown in class, secont one is
-
         return Multiply(Multiply(orderedVectors[0], orderedVectors[1]), orderedVectors[2]);
-
-        //return Multiply(orderedVectors[2], Multiply(orderedVectors[1], orderedVectors[0]));
-        
     }
 
     //returns half the angle between q1 and q2
@@ -67,7 +62,6 @@ public class QuaternionUtils
         Vector4 quatMult = Multiply(q1, Conjugate(q2));
         float theta = 2 * Mathf.Acos(Mathf.Clamp(quatMult.w, -1, 1));
         return theta > Mathf.PI ? (2 * Mathf.PI - theta) / 2 : theta / 2;
-
     }
 
     // Returns a spherically interpolated quaternion between q1 and q2 at time t in [0,1]
@@ -82,6 +76,7 @@ public class QuaternionUtils
 
         float firstParam = Mathf.Sin((1 - t) * theta) / Mathf.Sin(theta);
         float secondParam = Mathf.Sin(t * theta) / Mathf.Sin(theta);
+
         return firstParam * q1 + secondParam * q2;
     }
 }
