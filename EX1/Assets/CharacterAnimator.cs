@@ -78,10 +78,7 @@ public class CharacterAnimator : MonoBehaviour
         }
         return joint.gameObject;
     }
-
-
     
-
     // Transforms BVHJoint according to the keyframe channel data, and recursively transforms its children
     public void TransformJoint(BVHJoint joint, Matrix4x4 parentTransform)
     {
@@ -151,16 +148,23 @@ public class CharacterAnimator : MonoBehaviour
             curAngles[1] = currFrameData[joint.rotationChannels.y];
             curAngles[2] = currFrameData[joint.rotationChannels.z];
             Vector4 curQ = QuaternionUtils.FromEuler(curAngles, joint.rotationOrder).normalized;
+            Quaternion curQuaternion = new Quaternion(curQ.x, curQ.y, curQ.z, curQ.w);
 
             //next frame quaternions
             nextAngles[0] = nextFrameData[joint.rotationChannels.x];
             nextAngles[1] = nextFrameData[joint.rotationChannels.y];
             nextAngles[2] = nextFrameData[joint.rotationChannels.z];
             Vector4 nextQ = QuaternionUtils.FromEuler(nextAngles, joint.rotationOrder).normalized;
+            Quaternion nextQuaternion = new Quaternion(nextQ.x, nextQ.y, nextQ.z, nextQ.w);
 
             //slerp
-            Vector4 slerped = QuaternionUtils.Slerp(curQ, nextQ, t).normalized;
-            rotationMat = MatrixUtils.RotateFromQuaternion(slerped);
+            Quaternion slerped = Quaternion.Slerp(curQuaternion, nextQuaternion, t);
+            Vector4 fromQuaternion = new Vector4(slerped.x, slerped.y, slerped.z, slerped.w);
+            rotationMat = MatrixUtils.RotateFromQuaternion(fromQuaternion);
+
+            // our quaternion version
+            //Vector4 slerped = QuaternionUtils.Slerp(curQ, nextQ, t).normalized;
+            //rotationMat = MatrixUtils.RotateFromQuaternion(slerped);
         }
         else
         {
