@@ -33,12 +33,42 @@ public class MeshData
     // Calculates surface normals for each vertex, according to face orientation
     public void CalculateNormals()
     {
-        // Your implementation
+        //list containing for each vertex 3 normals of the surfaces touching the vertex
+        List<List<Vector3>> vertexSurfaceNormals = new List<List<Vector3>>(vertices.Count);
+        normals = new Vector3[vertices.Count];
+
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            vertexSurfaceNormals.Add(new List<Vector3>());
+        }
+
+        for (int i = 0; i < triangles.Count; i += 3)
+        {
+            Vector3 v1 = vertices[triangles[i]];
+            Vector3 v2 = vertices[triangles[i + 1]];
+            Vector3 v3 = vertices[triangles[i + 2]];
+            Vector3 surfaceNormal = GetSurfaceNormal(v1, v2, v3);
+
+            vertexSurfaceNormals[triangles[i]].Add(surfaceNormal);
+            vertexSurfaceNormals[triangles[i + 1]].Add(surfaceNormal);
+            vertexSurfaceNormals[triangles[i + 2]].Add(surfaceNormal);
+        }
+        for(int i = 0; i < vertices.Count; i++)
+        {
+            List<Vector3> vertexNormals = vertexSurfaceNormals[i];
+            normals[i] = (vertexNormals[0] + vertexNormals[1] + vertexNormals[2]).normalized;
+        }
     }
 
     // Edits mesh such that each face has a unique set of 3 vertices
     public void MakeFlatShaded()
     {
         // Your implementation
+    }
+
+    // returns a normalized surface normal for the surface composed by v1, v2 and v3
+    private Vector3 GetSurfaceNormal(Vector3 v1, Vector3 v2, Vector3 v3)
+    {
+        return Vector3.Cross(v1 - v3, v2 - v3).normalized;
     }
 }
