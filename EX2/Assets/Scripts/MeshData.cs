@@ -56,14 +56,29 @@ public class MeshData
         for(int i = 0; i < vertices.Count; i++)
         {
             List<Vector3> vertexNormals = vertexSurfaceNormals[i];
-            normals[i] = (vertexNormals[0] + vertexNormals[1] + vertexNormals[2]).normalized;
+            Vector3 sumNormals = new Vector3(0, 0, 0);
+            foreach(var vec in vertexNormals)
+            {
+                sumNormals += vec;
+            }
+            normals[i] = sumNormals.normalized;
         }
     }
 
     // Edits mesh such that each face has a unique set of 3 vertices
     public void MakeFlatShaded()
     {
-        // Your implementation
+        List<Vector3> newVertices = new List<Vector3>(triangles.Count);
+        List<int> newTriangles = new List<int>();
+        
+
+        for (int i = 0; i < triangles.Count; i++)
+        {
+            newTriangles.Add(i);
+            newVertices.Add(vertices[triangles[i]]);
+        }
+        vertices = newVertices;
+        triangles = newTriangles;
     }
 
     // returns a normalized surface normal for the surface composed by v1, v2 and v3

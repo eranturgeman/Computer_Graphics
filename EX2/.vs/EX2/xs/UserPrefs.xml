@@ -1,12 +1,15 @@
-﻿<Properties StartupConfiguration="{D47C0CD4-C924-89E5-59DF-D952B33B26C3}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MeshData.cs">
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Materials/BlinnPhong.shader">
     <Files>
-      <File FileName="Assets/Scripts/MeshData.cs" Line="41" Column="10" />
+      <File FileName="Assets/Scripts/MeshData.cs" Line="72" Column="50" />
+      <File FileName="Assets/Scripts/MeshViewer.cs" Line="29" Column="19" />
+      <File FileName="Assets/Materials/BlinnPhongGouraud.shader" Line="60" Column="21" />
+      <File FileName="Assets/Materials/BlinnPhong.shader" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="635912f5-d8ee-4d87-acad-bac9f914e6d6" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="2c78ab10-1e00-4461-8353-ac36c0d61762" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
