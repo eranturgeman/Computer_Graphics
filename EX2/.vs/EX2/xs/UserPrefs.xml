@@ -1,10 +1,7 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Materials/BlinnPhong.shader">
     <Files>
-      <File FileName="Assets/Scripts/MeshData.cs" Line="72" Column="50" />
-      <File FileName="Assets/Scripts/MeshViewer.cs" Line="29" Column="19" />
-      <File FileName="Assets/Materials/BlinnPhongGouraud.shader" Line="60" Column="21" />
-      <File FileName="Assets/Materials/BlinnPhong.shader" Line="1" Column="1" />
+      <File FileName="Assets/Materials/BlinnPhong.shader" Line="49" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
