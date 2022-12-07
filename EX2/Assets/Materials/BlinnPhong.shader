@@ -36,28 +36,35 @@
                 {
                     float4 pos : SV_POSITION;
                     float3 normal: NORMAL;
+                    float4 worldVertex: TEXTCOORD0;
                 };
 
                 // Calculates diffuse lighting of secondary point lights (part 3)
                 fixed4 pointLights(v2f input)
                 {
                     float3 n = normalize(input.normal);
+                    
 
                     //first secondary light
-                    float3 l0 = float3(unity_4LightPosX0[0], unity_4LightPosY0[0], unity_4LightPosZ0[0]);
-                    fixed4 light = unity_4LightAtten0[0] * max(0, dot(n, l0)) * _DiffuseColor * unity_LightColor[0];
+                    float3 l0 = float3(unity_4LightPosX0[0], unity_4LightPosY0[0], unity_4LightPosZ0[0]) - input.worldVertex.xyz;
+                    float i0 = 1 / (1 + pow(length(l0), 2) * unity_4LightAtten0[0]);
+                    fixed4 light = i0 * max(0, dot(n, l0)) * _DiffuseColor * unity_LightColor[0];
 
                     //second secondary light
-                    float3 l1 = float3(unity_4LightPosX0[1], unity_4LightPosY0[1], unity_4LightPosZ0[1]);
-                    light = light + (unity_4LightAtten0[1] * max(0, dot(n, l1)) * _DiffuseColor * unity_LightColor[1]);
+                    float3 l1 = float3(unity_4LightPosX0[1], unity_4LightPosY0[1], unity_4LightPosZ0[1]) - input.worldVertex.xyz;
+                    float i1 = 1 / (1 + pow(length(l1), 2) * unity_4LightAtten0[1]);
+                    light = light + (i1 * max(0, dot(n, l1)) * _DiffuseColor * unity_LightColor[1]);
 
                     //third secondary light
-                    float3 l2 = float3(unity_4LightPosX0[2], unity_4LightPosY0[2], unity_4LightPosZ0[2]);
-                    light = light + (unity_4LightAtten0[2] * max(0, dot(n, l2)) * _DiffuseColor * unity_LightColor[2]);
+                    float3 l2 = float3(unity_4LightPosX0[2], unity_4LightPosY0[2], unity_4LightPosZ0[2]) - input.worldVertex.xyz;
+                    float i2 = 1 / (1 + pow(length(l2), 2) * unity_4LightAtten0[2]); 
+                    light = light + (i2 * max(0, dot(n, l2)) * _DiffuseColor * unity_LightColor[2]);
 
                     //fourth secondary light
-                    float3 l3 = float3(unity_4LightPosX0[3], unity_4LightPosY0[3], unity_4LightPosZ0[3]);
-                    light = light + (unity_4LightAtten0[3] * max(0, dot(n, l3)) * _DiffuseColor * unity_LightColor[3]);
+                    float3 l3 = float3(unity_4LightPosX0[3], unity_4LightPosY0[3], unity_4LightPosZ0[3]) - input.worldVertex.xyz;
+                    float i3 = 1 / (1 + pow(length(l3), 2) * unity_4LightAtten0[3]);
+                    light = light + (i3 * max(0, dot(n, l3)) * _DiffuseColor * unity_LightColor[3]);
+
                     return light;
                 }
 
@@ -66,15 +73,16 @@
                 {
                     v2f output;
                     output.pos = UnityObjectToClipPos(input.vertex);
-                    output.normal = input.normal;
+                    output.worldVertex = mul(unity_ObjectToWorld, input.vertex);
+                    output.normal = mul(unity_ObjectToWorld, input.normal);
                     return output;
                 }
 
 
                 fixed4 frag (v2f input) : SV_Target
                 {
-                    float3 l = normalize(_WorldSpaceLightPos0);
-                    float3 v = normalize(_WorldSpaceCameraPos.xyz);
+                    float3 l = _WorldSpaceLightPos0;
+                    float3 v = normalize(_WorldSpaceCameraPos.xyz - input.worldVertex.xyz);
                     float3 h = normalize(l + v);
                     float3 n = normalize(input.normal);
 
