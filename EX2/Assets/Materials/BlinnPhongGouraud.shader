@@ -43,20 +43,21 @@
                 {
                     v2f output;
 
-
-                    float4 pos = UnityObjectToClipPos(input.vertex);
-                    fixed3 l = normalize(_WorldSpaceLightPos0);
-                    fixed3 v = normalize(_WorldSpaceCameraPos.xyz);
+                    float4 worldVertex = mul(unity_ObjectToWorld, input.vertex);
+                    fixed3 l = _WorldSpaceLightPos0;
+                    fixed3 v = normalize(_WorldSpaceCameraPos.xyz - worldVertex.xyz);
                     fixed3 h = normalize(l + v);
+                    float3 n = normalize(mul(unity_ObjectToWorld, input.normal));
 
                     fixed4 a_color = _AmbientColor * _LightColor0;
 
-                    fixed4 d_color = max(0, dot(input.normal.xyz, l)) * _DiffuseColor * _LightColor0;  
+                    fixed4 d_color = max(0, dot(n, l)) * _DiffuseColor * _LightColor0;  
                     
-                    fixed4 s_color = pow(max(0, dot(input.normal, h)), _Shininess) * _SpecularColor * _LightColor0;
+                    fixed4 s_color = pow(max(0, dot(n, h)), _Shininess) * _SpecularColor * _LightColor0;
 
                     output.color = a_color + d_color + s_color;
-                    output.pos = pos;
+                    output.pos = UnityObjectToClipPos(input.vertex);
+
                     return output;
                 }
 

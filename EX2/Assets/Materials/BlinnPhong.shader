@@ -44,7 +44,6 @@
                 {
                     float3 n = normalize(input.normal);
                     
-
                     //first secondary light
                     float3 l0 = float3(unity_4LightPosX0[0], unity_4LightPosY0[0], unity_4LightPosZ0[0]) - input.worldVertex.xyz;
                     float i0 = 1 / (1 + pow(length(l0), 2) * unity_4LightAtten0[0]);
@@ -88,10 +87,10 @@
 
                     fixed4 a_color = _AmbientColor * _LightColor0;
 
-                    fixed4 d_color = max(0, dot(n, l)) * _DiffuseColor * _LightColor0;
-                    d_color = d_color + pointLights(input);
+                    fixed4 d_color = (max(0, dot(n, l)) * _DiffuseColor * _LightColor0) + pointLights(input);
                           
                     fixed4 s_color = pow(max(0, dot(n, h)), _Shininess) * _SpecularColor * _LightColor0;
+
                     return a_color + d_color + s_color;
                 }
 
