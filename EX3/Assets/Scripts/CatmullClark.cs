@@ -16,6 +16,8 @@ public class CCMeshData
 
 public static class CatmullClark
 {
+    private static int NO_FACE = -1;
+
     // Returns a QuadMeshData representing the input mesh after one iteration of Catmull-Clark subdivision.
     public static QuadMeshData Subdivide(QuadMeshData quadMeshData)
     {
@@ -41,24 +43,118 @@ public static class CatmullClark
     // f1, f2 are faces incident to the edge. If the edge belongs to one face only, f2 is -1
     public static List<Vector4> GetEdges(CCMeshData mesh)
     {
-        return null;
+        Dictionary<Tuple<int, int>, int> pointsToFace = new Dictionary<Tuple<int, int>, int>(); //dict mapping: (p1,p2)->face (by indices)
+        List<Vector4> edges = new List<Vector4>();
+        for(int i = 0; i < mesh.faces.Count; ++i)
+        {
+            Vector4 face = mesh.faces[i];
+            for(int j = 0; j < 4; ++j)
+            {
+                int v1 = (int)Math.Min(face[j], face[(j + 1)%4]);
+                int v2 = (int)Math.Max(face[j], face[(j + 1)%4]);
+
+                Tuple<int, int> key = new Tuple<int, int>(v1, v2);
+                if (pointsToFace.ContainsKey(key))
+                {
+                    edges.Add(new Vector4(v1, v2, pointsToFace[key], i));
+                    pointsToFace.Remove(key);
+                }
+                else
+                {
+                    pointsToFace[key] = i;
+                }
+            }
+        }
+
+        foreach(KeyValuePair<Tuple<int, int>, int> entry in pointsToFace)
+        {
+            edges.Add(new Vector4(entry.Key.Item1, entry.Key.Item2, entry.Value, NO_FACE));
+        }
+
+        return edges; //p1 < p2 always, not necessarily for faces
     }
 
     // Returns a list of "face points" for the given CCMeshData, as described in the Catmull-Clark algorithm 
     public static List<Vector3> GetFacePoints(CCMeshData mesh)
     {
-        return null;
+        List<Vector3> facePoints = new List<Vector3>(mesh.faces.Count);
+        for(int i = 0; i < mesh.faces.Count; ++i)
+        {
+            Vector3 sumVertices = new Vector3();
+            
+            for(int j = 0; j < 4; ++j)
+            {
+                sumVertices += mesh.points[(int)mesh.faces[i][j]];
+            }
+            facePoints[i] = sumVertices / 4;
+        }
+
+        return facePoints; //ordered by mesh.faces array
     }
 
     // Returns a list of "edge points" for the given CCMeshData, as described in the Catmull-Clark algorithm 
     public static List<Vector3> GetEdgePoints(CCMeshData mesh)
     {
-        return null;
+        List<Vector3> egdePoints = new List<Vector3>(mesh.edges.Count);
+        for (int i = 0; i < mesh.edges.Count; ++i)
+        {
+            Vector3 sumVertices = new Vector3();
+
+            sumVertices += mesh.points[(int)mesh.edges[i][0]];
+            sumVertices += mesh.points[(int)mesh.edges[i][1]];
+            sumVertices += mesh.facePoints[(int)mesh.edges[i][2]];
+            int f2 = (int)mesh.edges[i][3];
+            if(f2 != NO_FACE)
+            {
+                sumVertices += mesh.facePoints[f2];
+                egdePoints[i] = sumVertices / 4;
+            }
+            else
+            {
+                egdePoints[i] = sumVertices / 3;
+            }
+        }
+        return egdePoints;
     }
 
     // Returns a list of new locations of the original points for the given CCMeshData, as described in the CC algorithm 
     public static List<Vector3> GetNewPoints(CCMeshData mesh)
     {
-        return null;
+        Dictionary<int, Vector3> unnormalizedF2R = new Dictionary<int, Vector3>();
+        int[] pointsToAdjacentCount = new int[mesh.points.Count];
+        List<Vector3> newPoints = new List<Vector3>(mesh.points.Count);
+
+        //calculating f: later divide unnormlizedF(i) / pointsToAdjacentCount[i]
+        for (int i = 0; i < mesh.faces.Count; ++i)
+        {
+            Vector4 face = mesh.faces[i];
+            for(int j = 0; j < 4; ++j)
+            {
+                pointsToAdjacentCount[(int)face[j]] += 1;
+                if (unnormalizedF2R.ContainsKey((int)face[j]))
+                {
+                    unnormalizedF2R[(int)face[j]] += mesh.facePoints[i];
+                }
+                else
+                {
+                    unnormalizedF2R[(int)face[j]] = mesh.facePoints[i];
+                }
+            } 
+        }
+        for(int i = 0; i < mesh.edges.Count; ++i)
+        {
+            int p1 = (int)mesh.edges[i][0];
+            int p2 = (int)mesh.edges[i][1];
+            unnormalizedF2R[p1] += mesh.points[p1] + mesh.points[p2];
+            unnormalizedF2R[p2] += mesh.points[p1] + mesh.points[p2];
+        }
+
+        for (int i = 0; i < mesh.points.Count; ++i)
+        {
+            int n = pointsToAdjacentCount[i];
+            Vector3 p = mesh.points[i];
+            newPoints[i] = ((unnormalizedF2R[i] / n) + ((n - 3) * p)) / n;
+        }
+        return newPoints;
     }
 }
