@@ -30,12 +30,66 @@ public static class CatmullClark
         meshData.edgePoints = GetEdgePoints(meshData);
         meshData.newPoints = GetNewPoints(meshData);
 
+
+        //new points array will be: newPoints, facePoints, edgePoint
+        int facePointsIndent = meshData.newPoints.Count;
+        int edgePointsIndent = facePointsIndent + meshData.facePoints.Count;
+        List<Vector3> newVertices = meshData.newPoints;
+        newVertices.AddRange(meshData.facePoints);
+        newVertices.AddRange(meshData.edgePoints);
+
+
+        List <Vector4> newQuads = new List<Vector4>();
+
         // Combine facePoints, edgePoints and newPoints into a subdivided QuadMeshData
+        Dictionary<Tuple<int, int>, int> d = new Dictionary<Tuple<int, int>, int>();
+        List<Vector2> indices = new List<Vector2>();
+        indices.Add(new Vector2(0, 2));
+        indices.Add(new Vector2(0, 3));
+        indices.Add(new Vector2(1, 2));
+        indices.Add(new Vector2(1, 3));
 
-        // Your implementation here...
 
-        return new QuadMeshData();
+        for (int i = 0; i < meshData.edges.Count; ++i)
+        {
+            Vector4 edge = meshData.edges[i];
+            foreach(Vector2 v in indices)
+            {
+                Tuple<int, int> key = new Tuple<int, int>((int)edge[(int)v[0]], (int)edge[(int)v[1]]);
+                if (key.Item2 == NO_FACE)
+                {
+                    continue;
+                }
+
+                if (d.ContainsKey(key))
+                {
+                    // extract the value of the key and combine it to a quad
+                    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + d[key])); //(facePoint, edgePoint1, newPoint, edgePoint2)
+                    d.Remove(key);
+                }
+                else
+                {
+                    //if this is the first pair for this key
+                    d[key] = i;
+                }
+            }
+
+        }
+        //Debug.Log(d.Keys.Count);
+        //for (int j = 0; j < newQuads.Count; ++j)
+        //{
+        //    for (int k = 0; k < 4; ++k)
+        //    {
+        //        if (newQuads[j][k] > newVertices.Count)
+        //        {
+        //            Debug.Log(newQuads[j][k]);
+        //        }
+        //    }
+        //}
+   
+        return new QuadMeshData(newVertices, newQuads);
     }
+
 
     // Returns a list of all edges in the mesh defined by given points and faces.
     // Each edge is represented by Vector4(p1, p2, f1, f2)
@@ -77,7 +131,7 @@ public static class CatmullClark
     // Returns a list of "face points" for the given CCMeshData, as described in the Catmull-Clark algorithm 
     public static List<Vector3> GetFacePoints(CCMeshData mesh)
     {
-        List<Vector3> facePoints = new List<Vector3>(mesh.faces.Count);
+        List<Vector3> facePoints = new List<Vector3>();
         for(int i = 0; i < mesh.faces.Count; ++i)
         {
             Vector3 sumVertices = new Vector3();
@@ -86,7 +140,7 @@ public static class CatmullClark
             {
                 sumVertices += mesh.points[(int)mesh.faces[i][j]];
             }
-            facePoints[i] = sumVertices / 4;
+            facePoints.Add(sumVertices / 4);
         }
 
         return facePoints; //ordered by mesh.faces array
@@ -95,36 +149,36 @@ public static class CatmullClark
     // Returns a list of "edge points" for the given CCMeshData, as described in the Catmull-Clark algorithm 
     public static List<Vector3> GetEdgePoints(CCMeshData mesh)
     {
-        List<Vector3> egdePoints = new List<Vector3>(mesh.edges.Count);
+        List<Vector3> edgePoints = new List<Vector3>();
         for (int i = 0; i < mesh.edges.Count; ++i)
         {
             Vector3 sumVertices = new Vector3();
 
-            sumVertices += mesh.points[(int)mesh.edges[i][0]];
+            sumVertices += mesh.points[(int)mesh.edges[i][0]]; 
             sumVertices += mesh.points[(int)mesh.edges[i][1]];
             sumVertices += mesh.facePoints[(int)mesh.edges[i][2]];
             int f2 = (int)mesh.edges[i][3];
             if(f2 != NO_FACE)
             {
                 sumVertices += mesh.facePoints[f2];
-                egdePoints[i] = sumVertices / 4;
+                edgePoints.Add(sumVertices / 4);
             }
             else
             {
-                egdePoints[i] = sumVertices / 3;
+                edgePoints.Add(sumVertices / 3);
             }
         }
-        return egdePoints;
+        return edgePoints; //ordered by mesh.edges
     }
 
     // Returns a list of new locations of the original points for the given CCMeshData, as described in the CC algorithm 
     public static List<Vector3> GetNewPoints(CCMeshData mesh)
     {
         Dictionary<int, Vector3> unnormalizedF2R = new Dictionary<int, Vector3>();
-        int[] pointsToAdjacentCount = new int[mesh.points.Count];
-        List<Vector3> newPoints = new List<Vector3>(mesh.points.Count);
+        int[] pointsToAdjacentCount = new int[mesh.points.Count]; //for each point- how many edges/faces touching it
+        List<Vector3> newPoints = new List<Vector3>();
 
-        //calculating f: later divide unnormlizedF(i) / pointsToAdjacentCount[i]
+        // this is the summing of all face points for each point (f component)
         for (int i = 0; i < mesh.faces.Count; ++i)
         {
             Vector4 face = mesh.faces[i];
@@ -141,6 +195,8 @@ public static class CatmullClark
                 }
             } 
         }
+
+        // this is the summing of all edge midpoints (r components)
         for(int i = 0; i < mesh.edges.Count; ++i)
         {
             int p1 = (int)mesh.edges[i][0];
@@ -153,8 +209,8 @@ public static class CatmullClark
         {
             int n = pointsToAdjacentCount[i];
             Vector3 p = mesh.points[i];
-            newPoints[i] = ((unnormalizedF2R[i] / n) + ((n - 3) * p)) / n;
+            newPoints.Add(((unnormalizedF2R[i] / n) + ((n - 3) * p)) / n);
         }
-        return newPoints;
+        return newPoints; //ordered by mesh.points
     }
 }
