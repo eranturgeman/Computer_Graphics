@@ -17,37 +17,44 @@ public class BezierCurve : MonoBehaviour
     // Returns position B(t) on the Bezier curve for given parameter 0 <= t <= 1
     public Vector3 GetPoint(float t)
     {
-        return Vector3.zero;
+        Vector3 point = p0 * Mathf.Pow(1 - t, 3);
+        point += 3 * t * Mathf.Pow(1 - t, 2) * p1;
+        point += 3 * (1 - t) * t * t * p2;
+        return point + Mathf.Pow(t, 3) * p3;
     }
 
     // Returns first derivative B'(t) for given parameter 0 <= t <= 1
     public Vector3 GetFirstDerivative(float t)
     {
-        return Vector3.zero;
+        //simplified derevative
+        return 3 * ((p3 - 3 * p2 + 3 * p1 - p0) * Mathf.Pow(t, 2) + 2 * (p2 - 2 * p1 + p0) * t + p1 - p0);
     }
 
     // Returns second derivative B''(t) for given parameter 0 <= t <= 1
     public Vector3 GetSecondDerivative(float t)
     {
-        return Vector3.zero;
+        //simplified derevative
+        return 6 * ((p3 - 3 * p2 + 3 * p1 - p0) * t + p2 - 2 * p1 + p0);
     }
 
     // Returns the tangent vector to the curve at point B(t) for a given 0 <= t <= 1
     public Vector3 GetTangent(float t)
     {
-        return Vector3.zero;
+        return GetFirstDerivative(t).normalized;
     }
 
     // Returns the Frenet normal to the curve at point B(t) for a given 0 <= t <= 1
     public Vector3 GetNormal(float t)
     {
-        return Vector3.zero;
+        return Vector3.Cross(GetTangent(t), GetBinormal(t));
     }
 
     // Returns the Frenet binormal to the curve at point B(t) for a given 0 <= t <= 1
     public Vector3 GetBinormal(float t)
     {
-        return Vector3.zero;
+        Vector3 tTag = (GetFirstDerivative(t) + GetSecondDerivative(t)).normalized;
+        Vector3 tangent = GetTangent(t);
+        return Vector3.Cross(tangent, tTag);
     }
 
     // Calculates the arc-lengths lookup table

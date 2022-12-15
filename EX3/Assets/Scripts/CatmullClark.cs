@@ -67,7 +67,7 @@ public static class CatmullClark
     // builds the new quads array
     private static List<Vector4> buildNewQuadsArray(CCMeshData meshData, List<Vector2> indices, int facePointsIndent, int edgePointsIndent)
     {
-        Dictionary<Tuple<int, int>, int> d = new Dictionary<Tuple<int, int>, int>();
+        Dictionary<Tuple<int, int>, int> newPointFacePoint2EdgePoint = new Dictionary<Tuple<int, int>, int>();
         List<Vector4> newQuads = new List<Vector4>();
 
         for (int i = 0; i < meshData.edges.Count; ++i)
@@ -81,36 +81,27 @@ public static class CatmullClark
                     continue;
                 }
 
-                if (d.ContainsKey(key))
+                if (newPointFacePoint2EdgePoint.ContainsKey(key))
                 {
-                    //########################## NORMALS #####################
-                    //Vector4 p = new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + d[key]);
-                    //double sum = 0;
-                    //for (int j = 0; j < 3; ++j)
+                    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + newPointFacePoint2EdgePoint[key]));
+                    //d.Remove(key);
+
+                    //RANNI THE MAN
+                    // extract the value of the key and combine it to a quad
+                    //if (edge[2] == newPointFacePoint2EdgePoint[key])
                     //{
-                    //    //sum += (newVertices[(int)p[j + 1]].x - newVertices[(int)p[j]].x) * (newVertices[(int)p[j + 1]].y - newVertices[(int)p[j]].y);
-                    //    Vector3 c = Vector3.Cross(newVertices[(int)p[j + 1]], newVertices[(int)p[j]]);
-                    //    sum += c.x + c.y + c.z;
-                    //}
-                    //if (sum > 0)
-                    //{
-                    //    newQuads.Add(p);
+                    //    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + newPointFacePoint2EdgePoint[key], key.Item1, edgePointsIndent + i));
                     //}
                     //else
                     //{
-                    //    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + d[key], key.Item1, edgePointsIndent + i)); //(facePoint, edgePoint1, newPoint, edgePoint2)
-
+                    //    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + newPointFacePoint2EdgePoint[key]));
                     //}
-                    //########################## NORMALS #####################
 
-                    // extract the value of the key and combine it to a quad
-                    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + d[key]));
-                    //d.Remove(key);
                 }
                 else
                 {
                     //if this is the first pair for this key
-                    d[key] = i;
+                    newPointFacePoint2EdgePoint[key] = i;
                 }
             }
 
@@ -132,9 +123,8 @@ public static class CatmullClark
             Vector4 face = mesh.faces[i];
             for(int j = 0; j < 4; ++j)
             {
-                int v1 = (int)Math.Min(face[j], face[(j + 1)%4]);
+                int v1 = (int)Math.Min(face[j], face[(j + 1) % 4]);
                 int v2 = (int)Math.Max(face[j], face[(j + 1)%4]);
-
                 Tuple<int, int> key = new Tuple<int, int>(v1, v2);
                 if (pointsToFace.ContainsKey(key))
                 {
@@ -145,6 +135,26 @@ public static class CatmullClark
                 {
                     pointsToFace[key] = i;
                 }
+
+                // RANNI THE MAN
+                //int v1 = (int)face[j];
+                //int v2 = (int)face[(j + 1) % 4];
+
+                //Tuple<int, int> key = new Tuple<int, int>(v1, v2);
+                //Tuple<int, int> revKey = new Tuple<int, int>(v2, v1);
+
+                //bool keyExists = pointsToFace.ContainsKey(key);
+                //bool revKeyExists = pointsToFace.ContainsKey(revKey);
+
+                //if(!(keyExists || revKeyExists))
+                //{
+                //    pointsToFace[key] = i;
+                //}
+                //if(revKeyExists)
+                //{
+                //    edges.Add(new Vector4(v2, v1, pointsToFace[revKey], i));
+                //}
+
             }
         }
 
