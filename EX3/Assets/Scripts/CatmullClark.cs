@@ -30,30 +30,50 @@ public static class CatmullClark
         meshData.edgePoints = GetEdgePoints(meshData);
         meshData.newPoints = GetNewPoints(meshData);
 
-
         //new points array will be: newPoints, facePoints, edgePoint
         int facePointsIndent = meshData.newPoints.Count;
         int edgePointsIndent = facePointsIndent + meshData.facePoints.Count;
-        List<Vector3> newVertices = meshData.newPoints;
-        newVertices.AddRange(meshData.facePoints);
-        newVertices.AddRange(meshData.edgePoints);
+
+        List<Vector3> newVertices = buildNewVerticesArray(meshData);
+       
+        List<Vector4> newQuads = buildNewQuadsArray(meshData, getRunningIndices(), facePointsIndent, edgePointsIndent);
+
+        return new QuadMeshData(newVertices, newQuads);
+    }
 
 
-        List <Vector4> newQuads = new List<Vector4>();
-
-        // Combine facePoints, edgePoints and newPoints into a subdivided QuadMeshData
-        Dictionary<Tuple<int, int>, int> d = new Dictionary<Tuple<int, int>, int>();
+    private static List<Vector2> getRunningIndices()
+    {
         List<Vector2> indices = new List<Vector2>();
         indices.Add(new Vector2(0, 2));
         indices.Add(new Vector2(0, 3));
         indices.Add(new Vector2(1, 2));
         indices.Add(new Vector2(1, 3));
 
+        return indices;
+    }
+
+
+    //builds the new vertices array
+    private static List<Vector3> buildNewVerticesArray(CCMeshData meshData)
+    {
+        List<Vector3> newVertices = meshData.newPoints;
+        newVertices.AddRange(meshData.facePoints);
+        newVertices.AddRange(meshData.edgePoints);
+        return newVertices;
+    }
+
+
+    // builds the new quads array
+    private static List<Vector4> buildNewQuadsArray(CCMeshData meshData, List<Vector2> indices, int facePointsIndent, int edgePointsIndent)
+    {
+        Dictionary<Tuple<int, int>, int> d = new Dictionary<Tuple<int, int>, int>();
+        List<Vector4> newQuads = new List<Vector4>();
 
         for (int i = 0; i < meshData.edges.Count; ++i)
         {
             Vector4 edge = meshData.edges[i];
-            foreach(Vector2 v in indices)
+            foreach (Vector2 v in indices)
             {
                 Tuple<int, int> key = new Tuple<int, int>((int)edge[(int)v[0]], (int)edge[(int)v[1]]);
                 if (key.Item2 == NO_FACE)
@@ -63,9 +83,29 @@ public static class CatmullClark
 
                 if (d.ContainsKey(key))
                 {
+                    //########################## NORMALS #####################
+                    //Vector4 p = new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + d[key]);
+                    //double sum = 0;
+                    //for (int j = 0; j < 3; ++j)
+                    //{
+                    //    //sum += (newVertices[(int)p[j + 1]].x - newVertices[(int)p[j]].x) * (newVertices[(int)p[j + 1]].y - newVertices[(int)p[j]].y);
+                    //    Vector3 c = Vector3.Cross(newVertices[(int)p[j + 1]], newVertices[(int)p[j]]);
+                    //    sum += c.x + c.y + c.z;
+                    //}
+                    //if (sum > 0)
+                    //{
+                    //    newQuads.Add(p);
+                    //}
+                    //else
+                    //{
+                    //    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + d[key], key.Item1, edgePointsIndent + i)); //(facePoint, edgePoint1, newPoint, edgePoint2)
+
+                    //}
+                    //########################## NORMALS #####################
+
                     // extract the value of the key and combine it to a quad
-                    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + d[key])); //(facePoint, edgePoint1, newPoint, edgePoint2)
-                    d.Remove(key);
+                    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + d[key]));
+                    //d.Remove(key);
                 }
                 else
                 {
@@ -75,19 +115,7 @@ public static class CatmullClark
             }
 
         }
-        //Debug.Log(d.Keys.Count);
-        //for (int j = 0; j < newQuads.Count; ++j)
-        //{
-        //    for (int k = 0; k < 4; ++k)
-        //    {
-        //        if (newQuads[j][k] > newVertices.Count)
-        //        {
-        //            Debug.Log(newQuads[j][k]);
-        //        }
-        //    }
-        //}
-   
-        return new QuadMeshData(newVertices, newQuads);
+        return newQuads;
     }
 
 
@@ -178,11 +206,26 @@ public static class CatmullClark
         int[] pointsToAdjacentCount = new int[mesh.points.Count]; //for each point- how many edges/faces touching it
         List<Vector3> newPoints = new List<Vector3>();
 
-        // this is the summing of all face points for each point (f component)
+        addFComponent(mesh, unnormalizedF2R, pointsToAdjacentCount);
+
+        add2RComponent(mesh, unnormalizedF2R);
+
+        for (int i = 0; i < mesh.points.Count; ++i)
+        {
+            int n = pointsToAdjacentCount[i];
+            Vector3 p = mesh.points[i];
+            newPoints.Add(((unnormalizedF2R[i] / n) + ((n - 3) * p)) / n);
+        }
+        return newPoints; //ordered by mesh.points
+    }
+
+    // summing of all face points for each point (f component)
+    private static void addFComponent(CCMeshData mesh, Dictionary<int, Vector3> unnormalizedF2R, int[] pointsToAdjacentCount)
+    {
         for (int i = 0; i < mesh.faces.Count; ++i)
         {
             Vector4 face = mesh.faces[i];
-            for(int j = 0; j < 4; ++j)
+            for (int j = 0; j < 4; ++j)
             {
                 pointsToAdjacentCount[(int)face[j]] += 1;
                 if (unnormalizedF2R.ContainsKey((int)face[j]))
@@ -193,24 +236,19 @@ public static class CatmullClark
                 {
                     unnormalizedF2R[(int)face[j]] = mesh.facePoints[i];
                 }
-            } 
+            }
         }
+    }
 
-        // this is the summing of all edge midpoints (r components)
-        for(int i = 0; i < mesh.edges.Count; ++i)
+    // summing of all edge midpoints (r components)
+    private static void add2RComponent(CCMeshData mesh, Dictionary<int, Vector3> unnormalizedF2R)
+    {
+        for (int i = 0; i < mesh.edges.Count; ++i)
         {
             int p1 = (int)mesh.edges[i][0];
             int p2 = (int)mesh.edges[i][1];
             unnormalizedF2R[p1] += mesh.points[p1] + mesh.points[p2];
             unnormalizedF2R[p2] += mesh.points[p1] + mesh.points[p2];
         }
-
-        for (int i = 0; i < mesh.points.Count; ++i)
-        {
-            int n = pointsToAdjacentCount[i];
-            Vector3 p = mesh.points[i];
-            newPoints.Add(((unnormalizedF2R[i] / n) + ((n - 3) * p)) / n);
-        }
-        return newPoints; //ordered by mesh.points
     }
 }
