@@ -73,30 +73,24 @@ public static class CatmullClark
         for (int i = 0; i < meshData.edges.Count; ++i)
         {
             Vector4 edge = meshData.edges[i];
-            foreach (Vector2 v in indices)
+            foreach (Vector2 curInd in indices)
             {
-                Tuple<int, int> key = new Tuple<int, int>((int)edge[(int)v[0]], (int)edge[(int)v[1]]);
+                Tuple<int, int> key = new Tuple<int, int>((int)edge[(int)curInd[0]], (int)edge[(int)curInd[1]]);
                 if (key.Item2 == NO_FACE)
                 {
                     continue;
                 }
 
-                if (newPointFacePoint2EdgePoint.ContainsKey(key))
-                {
-                    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + newPointFacePoint2EdgePoint[key]));
-                    //d.Remove(key);
+                if (newPointFacePoint2EdgePoint.ContainsKey(key)) {
+                    if (curInd[1] - curInd[0] != 2)
+                    {
+                        newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + newPointFacePoint2EdgePoint[key]));
+                    }
+                    else
+                    {
+                        newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + newPointFacePoint2EdgePoint[key], key.Item1, edgePointsIndent + i));
 
-                    //RANNI THE MAN
-                    // extract the value of the key and combine it to a quad
-                    //if (edge[2] == newPointFacePoint2EdgePoint[key])
-                    //{
-                    //    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + newPointFacePoint2EdgePoint[key], key.Item1, edgePointsIndent + i));
-                    //}
-                    //else
-                    //{
-                    //    newQuads.Add(new Vector4(facePointsIndent + key.Item2, edgePointsIndent + i, key.Item1, edgePointsIndent + newPointFacePoint2EdgePoint[key]));
-                    //}
-
+                    }
                 }
                 else
                 {
@@ -123,37 +117,24 @@ public static class CatmullClark
             Vector4 face = mesh.faces[i];
             for(int j = 0; j < 4; ++j)
             {
-                int v1 = (int)Math.Min(face[j], face[(j + 1) % 4]);
-                int v2 = (int)Math.Max(face[j], face[(j + 1)%4]);
+                int v1 = (int)face[j];
+                int v2 = (int)face[(j + 1) % 4];
+
                 Tuple<int, int> key = new Tuple<int, int>(v1, v2);
-                if (pointsToFace.ContainsKey(key))
-                {
-                    edges.Add(new Vector4(v1, v2, pointsToFace[key], i));
-                    pointsToFace.Remove(key);
-                }
-                else
+                Tuple<int, int> revKey = new Tuple<int, int>(v2, v1);
+
+                bool keyExists = pointsToFace.ContainsKey(key);
+                bool revKeyExists = pointsToFace.ContainsKey(revKey);
+
+                if (!(keyExists || revKeyExists))
                 {
                     pointsToFace[key] = i;
                 }
-
-                // RANNI THE MAN
-                //int v1 = (int)face[j];
-                //int v2 = (int)face[(j + 1) % 4];
-
-                //Tuple<int, int> key = new Tuple<int, int>(v1, v2);
-                //Tuple<int, int> revKey = new Tuple<int, int>(v2, v1);
-
-                //bool keyExists = pointsToFace.ContainsKey(key);
-                //bool revKeyExists = pointsToFace.ContainsKey(revKey);
-
-                //if(!(keyExists || revKeyExists))
-                //{
-                //    pointsToFace[key] = i;
-                //}
-                //if(revKeyExists)
-                //{
-                //    edges.Add(new Vector4(v2, v1, pointsToFace[revKey], i));
-                //}
+                if (revKeyExists)
+                {
+                    edges.Add(new Vector4(v2, v1, pointsToFace[revKey], i));
+                    pointsToFace.Remove(revKey);
+                }
 
             }
         }
