@@ -26,7 +26,30 @@ public class Chain : MonoBehaviour
             Destroy(link);
         }
 
-        // Your implementation here...
+        bool alternate = false;
+        float curLength = 0.0f;
+        curve.CalcCumLengths();
+        float totalLength = curve.ArcLength();
+        Debug.Log(totalLength);
+        while(curLength <= totalLength)
+        {
+            float t = curve.ArcLengthToT(curLength);
+            Vector3 normal = curve.GetNormal(t);
+            Vector3 binormal = curve.GetBinormal(t);
+            Vector3 tangent = curve.GetTangent(t);
+            Vector3 position = curve.GetPoint(t);
+
+            if (alternate)
+            {
+                chainLinks.Add(CreateChainLink(position, tangent, binormal));
+            }
+            else
+            {
+                chainLinks.Add(CreateChainLink(position, tangent, normal));
+            }
+            alternate = !alternate;
+            curLength += LinkSize;
+        }
     }
 
     // Instantiates & returns a ChainLink at given position, oriented towards the given forward and up vectors

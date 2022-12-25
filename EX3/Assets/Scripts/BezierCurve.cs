@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -60,18 +61,47 @@ public class BezierCurve : MonoBehaviour
     // Calculates the arc-lengths lookup table
     public void CalcCumLengths()
     {
-        // Your implementation here...
+        cumLengths = new float[numSteps + 1];
+        cumLengths[0] = 0f;
+        float stepSize = (float)1 / (float)128; 
+        for (int i = 1; i <= numSteps; ++i)
+        {
+            cumLengths[i] = cumLengths[i - 1] + Vector3.Distance(GetPoint(stepSize * i), GetPoint(stepSize * (i-1)));
+        }
     }
 
     // Returns the total arc-length of the Bezier curve
     public float ArcLength()
     {
-        return 0;
+        return cumLengths[numSteps];
     }
+
 
     // Returns approximate t s.t. the arc-length to B(t) = arcLength
     public float ArcLengthToT(float a)
     {
+        if (a >= ArcLength())
+        {
+            return 1;
+        }
+        if (a <= 0)
+        {
+            return 0;
+        }
+        int i = GetI(a, cumLengths, numSteps);
+        float inter = Mathf.InverseLerp(cumLengths[i], cumLengths[i + 1], a);
+        return ((float)i / (float)numSteps) + ((float)1 / (float)numSteps) * inter;
+    }
+
+    private int GetI(float a, float[] cumLengths, int numSteps)
+    {
+        for (int i = 0; i <= numSteps; ++i)
+        {
+            if (cumLengths[i] >= a)
+            {
+                return i - 1;
+            }
+        }
         return 0;
     }
 
