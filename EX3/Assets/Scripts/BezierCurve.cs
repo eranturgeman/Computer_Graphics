@@ -46,7 +46,7 @@ public class BezierCurve : MonoBehaviour
     // Returns the Frenet normal to the curve at point B(t) for a given 0 <= t <= 1
     public Vector3 GetNormal(float t)
     {
-        return Vector3.Cross(GetTangent(t), GetBinormal(t));
+        return Vector3.Cross(GetTangent(t), GetBinormal(t)).normalized;
     }
 
     // Returns the Frenet binormal to the curve at point B(t) for a given 0 <= t <= 1
@@ -54,7 +54,7 @@ public class BezierCurve : MonoBehaviour
     {
         Vector3 tTag = (GetFirstDerivative(t) + GetSecondDerivative(t)).normalized;
         Vector3 tangent = GetTangent(t);
-        return Vector3.Cross(tangent, tTag);
+        return Vector3.Cross(tangent, tTag).normalized;
     }
 
     // Calculates the arc-lengths lookup table

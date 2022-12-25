@@ -383,4 +383,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c4cf3b14b48c4e1aa60ea9ede0c537b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  QuadOBJFile: {fileID: 4900000, guid: 039268b327697475eaa2f96306113be8, type: 3}
+  QuadOBJFile: {fileID: 4900000, guid: 5221c7673aafd48de92b35404a32eec8, type: 3}
