@@ -66,15 +66,14 @@ Shader "CG/Bricks"
 
                     //getting bump Map normal
                     bumpMapData i;
-                    i.normal = normalize(input.worldNormal); //TODO check if need to be normalized
-                    i.tangent = normalize(input.worldTangent); //TODO check if need to be normalized  
+                    i.normal = normalize(input.worldNormal); 
+                    i.tangent = normalize(input.worldTangent);  
                     i.uv = input.uv;          
                     i.heightMap = _HeightMap;
                     i.du = _HeightMap_TexelSize.x;            
                     i.dv = _HeightMap_TexelSize.y;
                     i.bumpScale = _BumpScale / 10000.0;
                     float3 n = getBumpMappedNormal(i);
-                    //float3 n = normalize(input.worldNormal); //TODO del
 
                     fixed3 bf = blinnPhong(n, v, l, _Shininess, tex2D(_AlbedoMap, input.uv), tex2D(_SpecularMap, input.uv), _Ambient);
                     return fixed4(bf, 1);

@@ -63,12 +63,11 @@
 
                     float2 uv = getSphericalUV(input.worldVertex.xyz);
 
-                    // TODO check if need to be normalized
                     float4 n = normalize(mul(unity_ObjectToWorld, normalize(input.objectVertex - float4(0,0,0,1)))); //getting the normalized normal in world coordinate 
 
                     bumpMapData i;
                     i.normal = n; 
-                    i.tangent = normalize(cross(n, float4(0,1,0,0))); //TODO check if need to be normalized  
+                    i.tangent = normalize(cross(n, float4(0,1,0,0)));
                     i.uv = uv;          
                     i.heightMap = _HeightMap;
                     i.du = _HeightMap_TexelSize.x;            
@@ -81,7 +80,6 @@
                     fixed4 atmosphere = (1 - max(0, dot(n.xyz, v))) * sqrt(lambert) * _AtmosphereColor;
                     fixed4 clouds = tex2D(_CloudMap, uv) * (sqrt(lambert) + _Ambient);
                 
-                    
                     fixed3 bf = blinnPhong(finalNormal, v, l, _Shininess, tex2D(_AlbedoMap, uv), tex2D(_SpecularMap, uv), _Ambient);
                     return fixed4(bf, 1) + atmosphere + clouds;
                 }

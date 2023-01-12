@@ -58,7 +58,7 @@
                     float fTagU = (waterNoise(i.uv + i.du, t) - waterNoise(i.uv, t)) / i.du;
                     float fTagV = (waterNoise(i.uv + i.dv, t) - waterNoise(i.uv, t)) / i.dv;
                     float3 nh = normalize(float3(-i.bumpScale * fTagU, -i.bumpScale * fTagV, 1));
-                    return i.tangent * nh.x + i.normal * nh.z + cross(i.tangent, i.normal) * nh.y;
+                    return normalize(i.tangent * nh.x + i.normal * nh.z + cross(i.tangent, i.normal) * nh.y);
                 }
 
 
@@ -69,8 +69,8 @@
                     output.pos = UnityObjectToClipPos(displacedVertex);
                     output.uv = input.uv;
                     output.worldVertex = mul(unity_ObjectToWorld, input.vertex);
-                    output.worldTangent = normalize(mul(unity_ObjectToWorld, input.tangent)); //TODO check if need to be normalized 
-                    output.worldNormal = normalize(mul(unity_ObjectToWorld, input.normal)); //TODO check if need to be normalized
+                    output.worldTangent = normalize(mul(unity_ObjectToWorld, input.tangent));
+                    output.worldNormal = normalize(mul(unity_ObjectToWorld, input.normal));
                     
                     return output;
                 }
@@ -81,7 +81,6 @@
                     i.normal = input.worldNormal; 
                     i.tangent = input.worldTangent;  
                     i.uv = input.uv * _NoiseScale;          
-                    //i.heightMap = _HeightMap;
                     i.du = DELTA;            
                     i.dv = DELTA;
                     i.bumpScale = _BumpScale;
