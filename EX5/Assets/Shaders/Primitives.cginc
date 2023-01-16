@@ -13,7 +13,7 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
         return;
     }
 
-    float t;
+    float t = 0;
     if(D == 0)
     {
         t = -B / 2;
@@ -22,7 +22,18 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
     {
         float t1 = (-B - sqrt(D)) / 2;
         float t2 = (-B + sqrt(D)) / 2;
-        t = min(t1, t2);
+        if (t1 > 0 && t1 < t2)
+        {
+            t = t1;
+        }
+        if (t2 > 0 && t1 > t2)
+        {
+            t = t2;
+        }
+        if (t1 < 0 && t2 < 0)
+        {
+            return;
+        }
     }
     bestHit.distance = t;
     bestHit.position = o + (d * t);
@@ -35,7 +46,23 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
 // The plane passes through point c and has a surface normal n
 void intersectPlane(Ray ray, inout RayHit bestHit, Material material, float3 c, float3 n)
 {
-    // Your implementation
+    float3 o = ray.origin;
+    float3 d = ray.direction;
+    if(dot(d,n) == 0)
+    {
+        return;
+    }
+    float t = (-dot(o - c, n)) / dot(d, n);
+    if (t < 0 || t > bestHit.distance)
+    {
+        return;
+    }
+    bestHit.distance = t;
+    bestHit.position = o + (d * t);
+    bestHit.normal = n;
+    bestHit.material = material;
+    return;
+    
 }
 
 // Checks for an intersection between a ray and a plane
