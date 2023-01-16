@@ -1,0 +1,18 @@
+﻿<Properties StartupConfiguration="{ADEE4481-347F-2722-432F-C7CC4C84C49A}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Shaders/Scenes.cginc">
+    <Files>
+      <File FileName="Assets/Shaders/Ray.cginc" Line="39" Column="14" />
+      <File FileName="Assets/Shaders/Primitives.cginc" Line="29" Column="63" />
+      <File FileName="Assets/Shaders/RayTracer.compute" Line="32" Column="22" />
+      <File FileName="Assets/Shaders/Shading.cginc" Line="20" Column="26" />
+      <File FileName="Assets/Shaders/Scenes.cginc" Line="14" Column="11" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="7a5084e3-7a56-4ebc-ad9d-e37aa9ab0012" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
