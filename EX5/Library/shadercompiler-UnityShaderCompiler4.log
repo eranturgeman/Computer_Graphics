@@ -1,24 +1,18 @@
 Base path: '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents', plugins path '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/PlaybackEngines'
 Cmd: initializeCompiler
 Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3253 outsize=38231 ok=1
-Cmd: compileComputeKernel
-  error: 2 plat 14 at Primitives.cginc(25): syntax error: unexpected token 'and'
-  error: 2 plat 14 at Primitives.cginc(29): undeclared identifier 't2'
-  api=14 insize=3253 outsize=0 ok=0
-Cmd: compileComputeKernel
+  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3362 outsize=79352 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3362 outsize=79352 ok=1
+  api=14 insize=3587 outsize=91398 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3587 outsize=90904 ok=1
+  api=14 insize=3741 outsize=94318 ok=1
 Cmd: compileComputeKernel
-  error: 2 plat 14 at Primitives.cginc(84): undeclared identifier 'frawBackFace'
-  api=14 insize=3587 outsize=0 ok=0
-
-Quitting shader compiler process
+  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
+  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
+  api=14 insize=3741 outsize=118333 ok=1
+Cmd: compileComputeKernel
+  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
+  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
+  api=14 insize=3741 outsize=109157 ok=1

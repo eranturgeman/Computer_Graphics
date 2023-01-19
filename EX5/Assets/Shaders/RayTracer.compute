@@ -81,7 +81,15 @@ float3 trace(inout Ray ray)
     else
     {
         float3 sh = shadeHit(ray, hit);
-        reflectRay(ray, hit);
+        if(hit.material.refractiveIndex == -1)
+        {
+            reflectRay(ray, hit);
+        }
+        else
+        {
+            refractRay(ray, hit);
+        }
+        
         return originalEnergy * sh;
     }
 }
