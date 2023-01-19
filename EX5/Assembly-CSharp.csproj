@@ -64,6 +64,7 @@
      <None Include="Assets/Shaders/Ray.cginc" />
      <None Include="Assets/Shaders/Scenes.cginc" />
      <None Include="Assets/Shaders/Shading.cginc" />
+     <None Include="Assets/Shaders/readme.txt" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

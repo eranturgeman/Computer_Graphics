@@ -77,8 +77,8 @@ void intersectPlaneCheckered(Ray ray, inout RayHit bestHit, Material m1, Materia
     }
 
     // this ill be explained in the README
-    float adjustedScalar = dot(floor(2 * bestHit.position), (1-n));
-    if (fmod(adjustedScalar, 2) == 0)
+    float sumRelevantCoords = dot(floor(2 * bestHit.position), (1-n));
+    if (fmod(sumRelevantCoords, 2) == 0)
     {
         bestHit.material = m1;
     }
@@ -88,7 +88,7 @@ void intersectPlaneCheckered(Ray ray, inout RayHit bestHit, Material m1, Materia
 
 // Checks for an intersection between a ray and a triangle
 // The triangle is defined by points a, b, c
-void intersectTriangle(Ray ray, inout RayHit bestHit, Material material, float3 a, float3 b, float3 c, bool drawBackface = true)
+void intersectTriangle(Ray ray, inout RayHit bestHit, Material material, float3 a, float3 b, float3 c, bool drawBackface = false)
 {
     float3 pos = bestHit.position;
     float dist = bestHit.distance;
