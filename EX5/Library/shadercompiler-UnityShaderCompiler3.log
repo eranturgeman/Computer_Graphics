@@ -5,3 +5,5 @@ Cmd: compileComputeKernel
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
   api=14 insize=3253 outsize=38340 ok=1
+
+Quitting shader compiler process

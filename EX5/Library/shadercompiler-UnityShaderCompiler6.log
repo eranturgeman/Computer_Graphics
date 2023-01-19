@@ -9,3 +9,11 @@ Cmd: compileComputeKernel
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
   api=14 insize=3253 outsize=42554 ok=1
+Cmd: compileComputeKernel
+  error: 2 plat 14 at Shading.cginc(15): undeclared identifier 'intersectScene'
+  api=14 insize=3362 outsize=0 ok=0
+Cmd: compileComputeKernel
+  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
+  api=14 insize=3362 outsize=79243 ok=1
+
+Quitting shader compiler process

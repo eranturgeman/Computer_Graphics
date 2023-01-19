@@ -1,7 +1,6 @@
 Base path: '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents', plugins path '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/PlaybackEngines'
 Cmd: initializeCompiler
 Cmd: compileComputeKernel
-  api=14 insize=2979 outsize=13989 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3253 outsize=38340 ok=1
+  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
+  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
+  api=14 insize=3587 outsize=89079 ok=1

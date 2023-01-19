@@ -22,11 +22,11 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
     {
         float t1 = (-B - sqrt(D)) / 2;
         float t2 = (-B + sqrt(D)) / 2;
-        if (t1 > 0 && t1 < t2)
+        if (t1 > 0)
         {
             t = t1;
         }
-        if (t2 > 0 && t1 > t2)
+        if (t2 > 0 && t1 <= 0)
         {
             t = t2;
         }
@@ -53,7 +53,7 @@ void intersectPlane(Ray ray, inout RayHit bestHit, Material material, float3 c, 
         return;
     }
     float t = (-dot(o - c, n)) / dot(d, n);
-    if (t < 0 || t > bestHit.distance)
+    if (t <= 0 || t >= bestHit.distance)
     {
         return;
     }
@@ -78,7 +78,40 @@ void intersectPlaneCheckered(Ray ray, inout RayHit bestHit, Material m1, Materia
 // The triangle is defined by points a, b, c
 void intersectTriangle(Ray ray, inout RayHit bestHit, Material material, float3 a, float3 b, float3 c, bool drawBackface = false)
 {
-    // Your implementation
+    float3 pos = bestHit.position;
+    float dist = bestHit.distance;
+    float3 originalNormal = bestHit.normal;
+    Material mat = bestHit.material;
+
+    float3 n = normalize(cross(a - c, b - c));
+    intersectPlane(ray, bestHit, material, c, n);
+
+    if ((bestHit.distance == dist) || (isinf(bestHit.distance)))
+    {
+        return;
+    }
+    float3 p = bestHit.position;
+    bool cond1 = dot(cross(b - a, p - a), n) >= 0;
+    bool cond2 = dot(cross(c - b, p - b), n) >= 0;
+    bool cond3 = dot(cross(a - c, p - c), n) >= 0;
+    if (cond1 && cond2 && cond3)
+    {
+        return;
+    }
+    if (drawBackface)
+    {
+        bool cond1 = dot(cross(b - a, p - a), -n) >= 0;
+        bool cond2 = dot(cross(c - b, p - b), -n) >= 0;
+        bool cond3 = dot(cross(a - c, p - c), -n) >= 0;
+        if (cond1 && cond2 && cond3)
+        {
+            return;
+        }
+    }
+    bestHit.position = pos;
+    bestHit.distance = dist;
+    bestHit.normal = originalNormal;
+    bestHit.material = mat;
 }
 
 

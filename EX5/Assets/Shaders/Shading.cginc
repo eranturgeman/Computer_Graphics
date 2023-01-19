@@ -1,15 +1,20 @@
 // Implements an adjusted version of the Blinn-Phong lighting model
 float3 blinnPhong(float3 n, float3 v, float3 l, float shininess, float3 albedo)
 {
+    //TODO make sure v, l, n are in world position
+    float3 h = normalize(l + v);
     float3 diffuse = max(0, dot(n, l)) * albedo;
-    float3 specular = pow(max(0, dot(n, normalize((l + v) / 2))), shininess) * 0.4f;
+    float3 specular = pow(max(0, dot(n, h)), shininess) * 0.4f;
     return diffuse + specular;
 }
 
 // Reflects the given ray from the given hit point
 void reflectRay(inout Ray ray, RayHit hit)
 {
-    // Your implementation
+    float3 r = normalize((2 * dot(-ray.direction, hit.normal) * hit.normal) + ray.direction);
+    ray.origin = hit.position + EPS * hit.normal;
+    ray.direction = r;
+    ray.energy = ray.energy * hit.material.specular;
 }
 
 // Refracts the given ray from the given hit point

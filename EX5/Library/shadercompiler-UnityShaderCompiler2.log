@@ -1,14 +1,4 @@
 Base path: '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents', plugins path '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/PlaybackEngines'
 Cmd: initializeCompiler
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3253 outsize=38231 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3253 outsize=58122 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3362 outsize=58122 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3360 outsize=58089 ok=1
+
+Quitting shader compiler process

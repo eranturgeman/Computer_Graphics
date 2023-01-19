@@ -1,25 +1,32 @@
 ﻿<Properties StartupConfiguration="{ADEE4481-347F-2722-432F-C7CC4C84C49A}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="../Ex solutions/Computer Graphic Exercises/EX5(1)/Shading.cginc">
+  <MonoDevelop.Ide.Workbench ActiveDocument="../../../Downloads/Primitives.cginc">
     <Files>
-      <File FileName="Assets/Shaders/Primitives.cginc" Line="42" Column="16" NotebookId="1" />
-      <File FileName="Assets/Shaders/RayTracer.compute" Line="56" Column="32" NotebookId="1" />
-      <File FileName="Assets/Shaders/Scenes.cginc" Line="26" Column="32" NotebookId="1" />
-      <File FileName="Assets/Shaders/Ray.cginc" Line="65" Column="73" NotebookId="1" />
-      <File FileName="Assets/Shaders/Shading.cginc" Line="9" Column="2" NotebookId="1" />
+      <File FileName="Assets/Shaders/Shading.cginc" Line="17" Column="31" NotebookId="2" />
+      <File FileName="Assets/Shaders/Primitives.cginc" Line="88" Column="8" NotebookId="2" />
+      <File FileName="Assets/Shaders/RayTracer.compute" Line="1" Column="1" NotebookId="2" />
+      <File FileName="Assets/Shaders/Scenes.cginc" Line="1" Column="1" NotebookId="2" />
+      <File FileName="Assets/Shaders/Ray.cginc" Line="1" Column="1" NotebookId="2" />
     </Files>
     <FloatingWindows>
-      <FloatingWindow WindowId="1" X="1920" Y="205" Width="1440" Height="763">
+      <FloatingWindow WindowId="1" X="0" Y="211" Width="1440" Height="760">
         <Files>
-          <File FileName="../Ex solutions/Computer Graphic Exercises/EX5(1)/RayTracer.compute" Line="49" Column="5" />
-          <File FileName="../Ex solutions/Computer Graphic Exercises/EX5(1)/Primitives.cginc" Line="1" Column="1" />
-          <File FileName="../Ex solutions/Computer Graphic Exercises/EX5(1)/Shading.cginc" Line="7" Column="2" />
+          <File FileName="../Ex solutions/Computer Graphic Exercises/EX5(1)/RayTracer.compute" Line="56" Column="21" />
+          <File FileName="../Ex solutions/Computer Graphic Exercises/EX5(1)/Primitives.cginc" />
+          <File FileName="../Ex solutions/Computer Graphic Exercises/EX5(1)/Shading.cginc" />
+        </Files>
+      </FloatingWindow>
+      <FloatingWindow WindowId="2" X="0" Y="205" Width="1440" Height="847">
+        <Files>
+          <File FileName="../../../Downloads/Shading.cginc" Line="1" Column="1" NotebookId="1" />
+          <File FileName="../../../Downloads/RayTracer.compute" Line="1" Column="1" NotebookId="1" />
+          <File FileName="../../../Downloads/Primitives.cginc" Line="1" Column="1" NotebookId="1" />
         </Files>
       </FloatingWindow>
     </FloatingWindows>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="7a5084e3-7a56-4ebc-ad9d-e37aa9ab0012" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="3dd97d39-2c76-4b8e-a940-400076f13d5b" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -3,3 +3,8 @@ Cmd: initializeCompiler
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(52): use of potentially uninitialized variable (shadeHit)
   api=14 insize=3253 outsize=38340 ok=1
+Cmd: compileComputeKernel
+  error: 2 plat 14 at Primitives.cginc(84): undeclared identifier 'drawBackFace'
+  api=14 insize=3587 outsize=0 ok=0
+
+Quitting shader compiler process
