@@ -3,27 +3,20 @@ Cmd: initializeCompiler
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3587 outsize=91398 ok=1
+  api=14 insize=3715 outsize=113685 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=94506 ok=1
+  api=14 insize=3715 outsize=119349 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=94449 ok=1
+  api=14 insize=3715 outsize=99536 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=102421 ok=1
-Cmd: compileComputeKernel
-  error: 2 plat 14 at Primitives.cginc(209): undeclared identifier 'o'
-  api=14 insize=3741 outsize=0 ok=0
+  api=14 insize=3715 outsize=116400 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=118603 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=106391 ok=1
+  api=14 insize=3715 outsize=110972 ok=1

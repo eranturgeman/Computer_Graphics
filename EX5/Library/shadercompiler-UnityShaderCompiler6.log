@@ -1,20 +1,10 @@
 Base path: '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents', plugins path '/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/PlaybackEngines'
 Cmd: initializeCompiler
 Cmd: compileComputeKernel
-  error: 2 plat 14 at Shading.cginc(25): invalid subscript 'matrial'
-  api=14 insize=3741 outsize=0 ok=0
-Cmd: compileComputeKernel
-  error: 2 plat 14 at Shading.cginc(29): invalid subscript 'matrial'
-  api=14 insize=3741 outsize=0 ok=0
+  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
+  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
+  api=14 insize=3715 outsize=116188 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=98441 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=119349 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=119349 ok=1
+  api=14 insize=3715 outsize=107350 ok=1

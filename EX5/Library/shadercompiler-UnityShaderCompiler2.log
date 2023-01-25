@@ -3,38 +3,16 @@ Cmd: initializeCompiler
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3587 outsize=92325 ok=1
+  api=14 insize=3715 outsize=121066 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3587 outsize=91398 ok=1
+  api=14 insize=3715 outsize=121074 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=93337 ok=1
-Cmd: compileComputeKernel
-  error: 2 plat 14 at Shading.cginc(25): invalid subscript 'matrial'
-  api=14 insize=3741 outsize=0 ok=0
-Cmd: compileComputeKernel
-  error: 2 plat 14 at Shading.cginc(29): invalid subscript 'matrial'
-  api=14 insize=3741 outsize=0 ok=0
+  api=14 insize=3715 outsize=99531 ok=1
 Cmd: compileComputeKernel
   error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
   error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=94255 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=98441 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=115687 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=118603 ok=1
-Cmd: compileComputeKernel
-  error: 1 plat 14 at RayTracer.compute(51): value cannot be infinity, isinf() may not be necessary.  /Gis may force isinf() to be performed
-  error: 1 plat 14 at RayTracer.compute(58): use of potentially uninitialized variable (shadeHit)
-  api=14 insize=3741 outsize=112051 ok=1
+  api=14 insize=3715 outsize=116185 ok=1

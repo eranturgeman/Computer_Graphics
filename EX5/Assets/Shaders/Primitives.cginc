@@ -8,6 +8,7 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
     float B = 2 * dot(o - c, d);
     float C = dot(o - c, o - c) - pow(sphere.w, 2);
     float D = pow(B, 2) - (4 * C);
+
     if (D < 0)
     {
         return;
@@ -18,6 +19,7 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
     {
         t = -B / 2;
     }
+
     if(D > 0)
     {
         float t1 = (-B - sqrt(D)) / 2;
@@ -35,9 +37,10 @@ void intersectSphere(Ray ray, inout RayHit bestHit, Material material, float4 sp
             return;
         }
     }
+
     bestHit.distance = t;
     bestHit.position = o + (d * t);
-    bestHit.normal = normalize(bestHit.position - c); //TODO make sure that the normal doesnt have to start at the hit point
+    bestHit.normal = normalize(bestHit.position - c);
     bestHit.material = material;
     return;
 }
@@ -52,17 +55,18 @@ void intersectPlane(Ray ray, inout RayHit bestHit, Material material, float3 c, 
     {
         return;
     }
+
     float t = (-dot(o - c, n)) / dot(d, n);
     if (t <= 0 || t >= bestHit.distance)
     {
         return;
     }
+
     bestHit.distance = t;
     bestHit.position = o + (d * t);
     bestHit.normal = n;
     bestHit.material = material;
     return;
-    
 }
 
 // Checks for an intersection between a ray and a plane
@@ -76,7 +80,6 @@ void intersectPlaneCheckered(Ray ray, inout RayHit bestHit, Material m1, Materia
         return;
     }
 
-    // this ill be explained in the README
     float sumRelevantCoords = dot(floor(2 * bestHit.position), (1-n));
     if (fmod(sumRelevantCoords, 2) == 0)
     {
@@ -94,13 +97,17 @@ void intersectTriangle(Ray ray, inout RayHit bestHit, Material material, float3 
     float dist = bestHit.distance;
     float3 originalNormal = bestHit.normal;
     Material mat = bestHit.material;
-
+    
     float3 n = normalize(cross(a - c, b - c));
-    intersectPlane(ray, bestHit, material, c, n);
-
-    if ((bestHit.distance == dist) || (isinf(bestHit.distance)))
+    if (dot(ray.direction, n) > 0 && !drawBackface)
     {
         return;
+    }
+    intersectPlane(ray, bestHit, material, c, n);
+    
+    if ((bestHit.distance == dist) || (isinf(bestHit.distance))) 
+    {
+        return; // if we didn't hit the plane at all
     }
 
     float3 p = bestHit.position;
@@ -111,16 +118,8 @@ void intersectTriangle(Ray ray, inout RayHit bestHit, Material material, float3 
     {
         return; //hit inside the triangle
     }
-    if (drawBackface)
-    {   
-        bool cond1 = dot(cross(b - a, p - a), -n) >= 0;
-        bool cond2 = dot(cross(c - b, p - b), -n) >= 0;
-        bool cond3 = dot(cross(a - c, p - c), -n) >= 0;
-        if (cond1 && cond2 && cond3)
-        {
-            return;
-        }
-    }
+
+    // no hit from both sides of triangles - revert to original hitPoint
     bestHit.position = pos;
     bestHit.distance = dist;
     bestHit.normal = originalNormal;
@@ -136,6 +135,11 @@ void intersectCircle(Ray ray, inout RayHit bestHit, Material material, float4 ci
     float dist = bestHit.distance;
     float3 originalNormal = bestHit.normal;
     Material mat = bestHit.material;
+
+    if (dot(ray.direction, n) > 0 && !drawBackface)
+    {
+        return;
+    }
 
     float3 c = circle.xyz;
     float r = circle.w;
@@ -155,11 +159,6 @@ void intersectCircle(Ray ray, inout RayHit bestHit, Material material, float4 ci
         bestHit.normal = originalNormal;
         bestHit.material = mat;
         return;
-    }
-
-    if (drawBackface)
-    {
-        return; //TODO check if need to implement drawBackface
     }
 }
 
@@ -191,6 +190,7 @@ void intersectCylinderY(Ray ray, inout RayHit bestHit, Material material, float4
     {
         t = -B / 2;
     }
+
     if(D > 0)
     {
         float t1 = (-B - sqrt(D)) / (2 * A);
@@ -208,10 +208,12 @@ void intersectCylinderY(Ray ray, inout RayHit bestHit, Material material, float4
             return;
         }
     }
+
     if (t >= bestHit.distance)
     {
         return;
     }
+
     float3 p = o + (d * t);
     if (p.y <= cylinder.y + (h / 2) && p.y >= cylinder.y - (h / 2))
     {

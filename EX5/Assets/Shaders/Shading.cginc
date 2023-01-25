@@ -1,7 +1,6 @@
 // Implements an adjusted version of the Blinn-Phong lighting model
 float3 blinnPhong(float3 n, float3 v, float3 l, float shininess, float3 albedo)
 {
-    //TODO make sure v, l, n are in world position
     float3 h = normalize(l + v);
     float3 diffuse = max(0, dot(n, l)) * albedo;
     float3 specular = pow(max(0, dot(n, h)), shininess) * 0.4f;
@@ -35,7 +34,6 @@ void refractRay(inout Ray ray, RayHit hit)
 
     ray.origin = hit.position - (EPS * n);
     ray.direction = t;
-  
 }
 
 // Samples the _SkyboxTexture at a given direction vector
